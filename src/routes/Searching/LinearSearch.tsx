@@ -140,7 +140,7 @@ const LinearSearch = () => {
         </div>
       </div>
 
-      <div className="h-[95vh] flex justify-between">
+      <div className="flex justify-between">
         <div className=" w-[58%] h-full">
           <h1 className="text-xl mb-4">Pseudocode</h1>
           <div className="daisy-mockup-code">
@@ -234,16 +234,6 @@ const LinearSearch = () => {
               </code>
             </pre>
           </div>
-
-          <h1 className="text-lg mt-5">Read More: </h1>
-          <a
-            href="https://www.geeksforgeeks.org/linear-search/"
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-500"
-          >
-            GeeksForGeeks
-          </a>
         </div>
         <div className=" w-[40%] h-full">
           <Card>
@@ -292,6 +282,81 @@ const LinearSearch = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      <div className=" mt-5 h-full">
+        <Card>
+          <CardHeader>
+            <CardTitle>Algorithm</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol>
+              <li>
+                <strong>Input:</strong>
+                <ul>
+                  <li>
+                    A list of elements <code>arr</code> (with <code>n</code>{" "}
+                    elements).
+                  </li>
+                  <li>
+                    The element to be searched <code>x</code>.
+                  </li>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Linear Search:</strong>
+                <ul>
+                  <li>
+                    Start from the first element of the array (
+                    <code>arr[0]</code>).
+                  </li>
+                  <li>
+                    Repeat the following steps until the element is found or the
+                    end of the array is reached:
+                  </li>
+                  <ul>
+                    <li>
+                      Compare the current element with the target element (
+                      <code>x</code>).
+                    </li>
+                    <li>
+                      If they match, return the index of the current element.
+                    </li>
+                    <li>Move to the next element in the array.</li>
+                  </ul>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Not Found:</strong>
+                <ul>
+                  <li>
+                    If the loop exits without finding the element, return a
+                    special value (e.g., -1) to indicate that the element is not
+                    present.
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="my-5">
+        <h1 className="text-lg mt-5">Read More: </h1>
+        <a
+          href="https://www.geeksforgeeks.org/linear-search/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500"
+        >
+          GeeksForGeeks
+        </a>
       </div>
     </div>
   );

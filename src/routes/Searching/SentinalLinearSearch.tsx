@@ -3,18 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
 import { useEffect, useState } from "react";
 
 const SentinalLinearSearch = () => {
-  const [array, setArray] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-  const [target, setTarget] = useState<number | "">(0);
-  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [array, setArray] = useState<number[]>([]);
+  const [target, setTarget] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [found, setFound] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [delay, setDelay] = useState<number>(1);
+  const [foundElementIndex, setFoundElementIndex] = useState<number>(0);
 
   const randomize = (): void => {
     const newArray = [...array];
-    for (let i = 0; i < array.length; i++) {
+    for (let i = 0; i < 10; i++) {
       newArray[i] = Math.floor(Math.random() * 100);
     }
     setArray(newArray);
@@ -26,19 +29,21 @@ const SentinalLinearSearch = () => {
   }, []);
 
   const visualize = async (): Promise<void> => {
-    for (let i = 0; i < array.length; i++) {
-      setIsSearching(true);
-      setCurrentIndex(i);
-      if (array[i] === target) {
-        setFound(true);
-        break;
-      } else if (i === array.length - 1) {
-        setFound(false);
-      } else {
-        setFound(false);
-      }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+    setArray([...array, target]);
+    setIsSearching(true);
+    setCurrentIndex(0);
+    console.log("Current Index: ", currentIndex);
+    let i = 0;
+    const newArray = [...array, target];
+
+    do {
+      await new Promise((resolve) => setTimeout(resolve, delay * 1000));
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      i++;
+    } while (newArray[i] !== target);
+
+    setFound(true);
+    setFoundElementIndex(i);
   };
 
   return (
@@ -49,12 +54,23 @@ const SentinalLinearSearch = () => {
             Randomize Array
           </Button>
 
+          <div className="flex gap-5 w-[350px] items-center">
+            <p className="w-[300px]">Speed (In Seconds)</p>
+            <Slider
+              onValueChange={(e: number[]) => setDelay(e[0])}
+              defaultValue={[delay]}
+              max={10}
+              step={1}
+            />
+            {delay}
+          </div>
+
           <div className="flex gap-5">
             <Input
               placeholder="Enter target to find"
               type="number"
               className="w-50"
-              onChange={(e) => setTarget(parseInt(e.target.value) || "")}
+              onChange={(e) => setTarget(parseInt(e.target.value) || 0)}
               value={target}
             />
             <Button onClick={visualize}>Search</Button>
@@ -82,26 +98,31 @@ const SentinalLinearSearch = () => {
           <div className="flex flex-col gap-2 mt-10">
             <h1 className="text-2xl">Target: {target}</h1>
             <p>Current Array Index: {currentIndex}</p>
-            <p>Current Element on Specified Index: {array[currentIndex]}</p>
+            <p>
+              Current Element on Specified Index:{" "}
+              {currentIndex != null && array[currentIndex]}
+            </p>
 
-            {found ? (
+            {found && currentIndex !== array.length - 1 ? (
               <>
                 <p>
-                  {array[currentIndex]} === {target}
+                  {currentIndex != null && array[currentIndex]} === {target}
                 </p>
                 <p className="text-green-500">Target Found</p>
               </>
-            ) : !found && currentIndex === array.length - 1 ? (
+            ) : found && currentIndex === array.length - 1 ? (
               <>
                 <p>
-                  {array[currentIndex]} !== {target}
+                  {array.length - 1} === {foundElementIndex}
                 </p>
-                <p className="text-red-500">Target is Not in the Array!</p>
+                <p className="text-red-500">
+                  Target was found as Sentinel but not in the Array!
+                </p>
               </>
             ) : (
               <>
                 <p>
-                  {array[currentIndex]} !== {target}
+                  {currentIndex != null && array[currentIndex]} !== {target}
                 </p>
                 <p className="text-red-500">Target not found</p>
               </>
@@ -120,76 +141,55 @@ const SentinalLinearSearch = () => {
           </div>
           <div>
             <p>
-              A linear search is a methodical search algorithm that sequentially
-              examines each element in a list, starting from one end and
-              continuing until the target element is located. If the desired
-              element is not found, the search extends to the end of the
-              dataset.
-            </p>
-            <br />
-            <p>
-              Within the Linear Search Algorithm: <br /> - Each element is
-              treated as a potential match for the key and is examined
-              accordingly.
-              <br /> - If an element is discovered to be identical to the key,
-              the search is deemed successful, and the index of that element is
-              returned. <br />- In the absence of any element matching the key,
-              the search outcome is "No match found."
+              In this search approach, the last element of the array is
+              substituted with the target element, and subsequently, a linear
+              search is executed on the modified array. Importantly, there is no
+              need to verify whether the current index falls within the array's
+              valid index range. This is justified by the assurance that the
+              element being sought will always exist within the array, given
+              that it has been substituted for the last element. As a
+              consequence of this substitution, the linear search encounters the
+              target element during its traversal. Therefore, the check for
+              index boundaries is unnecessary since the element is guaranteed to
+              be within the array after the replacement. In the worst-case
+              scenario, the total number of comparisons required is (N + 2).
             </p>
           </div>
         </div>
       </div>
 
-      <div className="h-[95vh] flex justify-between">
+      <div className="flex justify-between">
         <div className=" w-[58%] h-full">
           <h1 className="text-xl mb-4">Pseudocode</h1>
           <div className="daisy-mockup-code">
             <pre>
+              {" "}
               <code
                 id="htmlViewer"
                 style={{
                   color: "rgb(171, 178, 191)",
                   fontWeight: 400,
                   display: "block",
-                  paddingLeft: "2em",
                   paddingRight: "2em",
+                  paddingLeft: "2em",
                 }}
               >
                 <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
-                  const
+                  function
                 </span>{" "}
-                <span className="hljs-title class_">LinearSearch</span> = (
-                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
-                  array
+                <span className="hljs-title function_">
+                  sentinelLinearSearch
                 </span>
-                :{" "}
-                <span style={{ color: "rgb(230, 192, 123)", fontWeight: 400 }}>
-                  number
-                </span>
-                [],{" "}
-                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
-                  target
-                </span>
-                :{" "}
-                <span style={{ color: "rgb(230, 192, 123)", fontWeight: 400 }}>
-                  number
-                </span>
-                ):{" "}
+                (
                 <span style={{ color: "rgb(171, 178, 191)", fontWeight: 400 }}>
-                  <span
-                    style={{ color: "rgb(171, 178, 191)", fontWeight: 400 }}
-                  >
-                    number
-                  </span>{" "}
-                  =&gt;
-                </span>{" "}
-                {"{"}
+                  arr, target
+                </span>
+                ) {"{"}
+                {"\n"}
+                {"    "}arr.<span className="hljs-title function_">push</span>
+                (target);
                 {"\n"}
                 {"    "}
-                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
-                  for
-                </span>{" "}
-                (
                 <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
                   let
                 </span>{" "}
@@ -197,53 +197,125 @@ const SentinalLinearSearch = () => {
                 <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
                   0
                 </span>
-                ; i &lt; array.
+                ;{"\n"}
+                {"    "}
+                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
+                  while
+                </span>{" "}
+                (arr[i] !== target) i++;{"\n"}
+                {"    "}arr.<span className="hljs-title function_">pop</span>();
+                {"\n"}
+                {"    "}
+                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
+                  return
+                </span>{" "}
+                i &amp;lt; arr.
                 <span style={{ color: "rgb(171, 178, 191)", fontWeight: 400 }}>
                   length
-                </span>
-                ; i++) {"{"}
-                {"\n"}
-                {"      "}
-                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
-                  if
                 </span>{" "}
-                (array[i] === target) {"{"}
-                {"\n"}
-                {"        "}
-                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
-                  return
-                </span>{" "}
-                i;{"\n"}
-                {"      "}
-                {"}"}
-                {"\n"}
-                {"    "}
-                {"}"}
-                {"\n"}
-                {"    "}
-                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
-                  return
-                </span>{" "}
-                -
+                ? i : -
                 <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
                   1
                 </span>
                 ;{"\n"}
-                {"  "}
-                {"}"};
+                {"}"}
+                {"\n"}
+                {"\n"}
+                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
+                  const
+                </span>{" "}
+                arrayToSearch = [
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  2
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  5
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  8
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  12
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  16
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  23
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  38
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  42
+                </span>
+                ,{" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  55
+                </span>
+                ];
+                {"\n"}
+                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
+                  const
+                </span>{" "}
+                targetElement ={" "}
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  16
+                </span>
+                ;{"\n"}
+                <span style={{ color: "rgb(198, 120, 221)", fontWeight: 400 }}>
+                  const
+                </span>{" "}
+                result ={" "}
+                <span className="hljs-title function_">
+                  sentinelLinearSearch
+                </span>
+                (arrayToSearch, targetElement);{"\n"}
+                {"\n"}
+                <span className="hljs-variable language_">console</span>.
+                <span className="hljs-title function_">log</span>(result !== -
+                <span style={{ color: "rgb(209, 154, 102)", fontWeight: 400 }}>
+                  1
+                </span>
+                {"\n"}
+                {"    "}?{" "}
+                <span style={{ color: "rgb(152, 195, 121)", fontWeight: 400 }}>
+                  `Element{" "}
+                  <span
+                    style={{ color: "rgb(224, 108, 117)", fontWeight: 400 }}
+                  >
+                    ${"{"}targetElement{"}"}
+                  </span>{" "}
+                  found at index{" "}
+                  <span
+                    style={{ color: "rgb(224, 108, 117)", fontWeight: 400 }}
+                  >
+                    ${"{"}result{"}"}
+                  </span>
+                  .`
+                </span>
+                {"\n"}
+                {"    "}:{" "}
+                <span style={{ color: "rgb(152, 195, 121)", fontWeight: 400 }}>
+                  `Element{" "}
+                  <span
+                    style={{ color: "rgb(224, 108, 117)", fontWeight: 400 }}
+                  >
+                    ${"{"}targetElement{"}"}
+                  </span>{" "}
+                  not found in the array.`
+                </span>
+                );
               </code>
             </pre>
           </div>
-
-          <h1 className="text-lg mt-5">Read More: </h1>
-          <a
-            href="https://www.geeksforgeeks.org/linear-search/"
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-500"
-          >
-            GeeksForGeeks
-          </a>
         </div>
         <div className=" w-[40%] h-full">
           <Card>
@@ -292,6 +364,100 @@ const SentinalLinearSearch = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      <div className=" mt-5 h-full">
+        <Card>
+          <CardHeader>
+            <CardTitle>Algorithm</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol>
+              <li>
+                <strong>Input:</strong>
+                <ul>
+                  <li>
+                    A list of elements <code>arr</code> (with <code>n</code>{" "}
+                    elements).
+                  </li>
+                  <li>
+                    The element to be searched <code>x</code>.
+                  </li>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Initialization:</strong>
+                <ul>
+                  <li>
+                    Set <code>last_element</code> to the last element of the
+                    array.
+                  </li>
+                  <li>
+                    Add the last element of the array (<code>arr[n-1]</code>)
+                    with the sentinel value <code>x</code>.
+                  </li>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Linear Search:</strong>
+                <ul>
+                  <li>
+                    Start from the first element of the array (
+                    <code>arr[0]</code>).
+                  </li>
+                  <li>
+                    Repeat the following steps until the element is found:
+                    <ul>
+                      <li>
+                        Compare the current element with the target element (
+                        <code>x</code>).
+                      </li>
+                      <li>
+                        If they match, return the index of the current element.
+                      </li>
+                      <li>Move to the next element in the array.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Check for Sentinel:</strong>
+                <ul>
+                  <li>
+                    After the linear search is completed, check if the element
+                    found is equal to the sentinel value <code>x</code>.
+                  </li>
+                  <li>
+                    If it is, then the target element was not found in the
+                    original array, and return a special value (e.g., -1) to
+                    indicate that the element is not present.
+                  </li>
+                  <li>Otherwise, return the index of the found element.</li>
+                </ul>
+              </li>
+            </ol>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="my-5">
+        <h1 className="text-lg">Read More: </h1>
+        <a
+          href="https://www.geeksforgeeks.org/sentinel-linear-search/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500"
+        >
+          GeeksForGeeks
+        </a>
       </div>
     </div>
   );

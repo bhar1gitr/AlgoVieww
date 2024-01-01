@@ -173,7 +173,7 @@ const BinarySearch = () => {
         </div>
       </div>
 
-      <div className="h-[95vh] flex justify-between ">
+      <div className="flex justify-between ">
         <div className=" w-[58%] h-full">
           <h1 className="text-xl mb-4">Pseudocode</h1>
           <div className="daisy-mockup-code">
@@ -414,16 +414,6 @@ const BinarySearch = () => {
               </code>
             </pre>
           </div>
-
-          <h1 className="text-lg mt-5">Read More: </h1>
-          <a
-            href="https://www.geeksforgeeks.org/binary-search/"
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-500"
-          >
-            GeeksForGeeks
-          </a>
         </div>
         <div className=" w-[40%] h-full mb-5">
           <Card>
@@ -481,6 +471,104 @@ const BinarySearch = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      <div className=" mt-5 h-full">
+        <Card>
+          <CardHeader>
+            <CardTitle>Algorithm</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ol>
+              <li>
+                <strong>Input:</strong>
+                <ul>
+                  <li>
+                    A sorted list of elements <code>arr</code> (with{" "}
+                    <code>n</code> elements).
+                  </li>
+                  <li>
+                    The element to be searched <code>x</code>.
+                  </li>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Initialization:</strong>
+                <ul>
+                  <li>
+                    Set <code>low</code> to the index of the first element
+                    (usually 0).
+                  </li>
+                  <li>
+                    Set <code>high</code> to the index of the last element (
+                    <code>n - 1</code>).
+                  </li>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Binary Search:</strong>
+                <ul>
+                  <li>
+                    While <code>low</code> is less than or equal to{" "}
+                    <code>high</code>:
+                  </li>
+                  <ul>
+                    <li>
+                      Calculate the middle index:{" "}
+                      <code>mid = (low + high) // 2</code>.
+                    </li>
+                    <li>
+                      Compare the middle element <code>arr[mid]</code> with the
+                      target element <code>x</code>.
+                    </li>
+                    <li>
+                      If they match, return <code>mid</code>.
+                    </li>
+                    <li>
+                      If <code>arr[mid]</code> is less than <code>x</code>, set{" "}
+                      <code>low = mid + 1</code>.
+                    </li>
+                    <li>
+                      If <code>arr[mid]</code> is greater than <code>x</code>,
+                      set <code>high = mid - 1</code>.
+                    </li>
+                  </ul>
+                </ul>
+              </li>
+
+              <br />
+
+              <li>
+                <strong>Not Found:</strong>
+                <ul>
+                  <li>
+                    If the loop exits without finding the element, return a
+                    special value (e.g., -1) to indicate that the element is not
+                    present.
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="my-5">
+        <h1 className="text-lg">Read More: </h1>
+        <a
+          href="https://www.geeksforgeeks.org/binary-search/"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-500"
+        >
+          GeeksForGeeks
+        </a>
       </div>
     </div>
   );
