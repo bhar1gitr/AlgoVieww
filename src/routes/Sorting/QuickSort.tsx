@@ -44,8 +44,13 @@ const QuickSort = () => {
       array: number[],
       start: number,
       end: number
-    ): number => {
-        
+    ): Promise<number> => {
+        console.log(array)
+        console.log(start)
+        console.log(end)
+        delay(speed)
+
+        return 0
     };
 
     const quickSort = async (
@@ -56,7 +61,7 @@ const QuickSort = () => {
       if (start >= end) {
         return;
       }
-      const mid = partition(array, start, end);
+      const mid = await partition(array, start, end);
       quickSort(array, start, mid - 1);
       quickSort(array, mid + 1, end);
     };
