@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,7 @@ const QuickSort = () => {
   const [speed, setSpeed] = useState<number>(10);
   const [array, setArray] = useState<number[]>([]);
   const [currentComparison, setCurrentComparison] = useState<number[]>([]);
-  const [currentMerge, setCurrentMerge] = useState<number[]>([]);
+  const [currentPivot, setCurrentPivot] = useState<number | null>(null);
 
   useEffect(() => {
     configBar(4);
@@ -33,37 +33,59 @@ const QuickSort = () => {
     }
     setArray(newArray);
     setCurrentComparison([]);
-    setCurrentMerge([]);
+    setCurrentPivot(null);
   };
 
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
   const sort = async () => {
-    const partition = async (
-      array: number[],
-      start: number,
-      end: number
-    ): Promise<number> => {
-        console.log(array)
-        console.log(start)
-        console.log(end)
-        delay(speed)
-
-        return 0
-    };
-
     const quickSort = async (
       array: number[],
-      start: number,
-      end: number
+      low: number,
+      high: number
     ): Promise<void> => {
-      if (start >= end) {
-        return;
+      if (low < high) {
+        const pivotIndex = await partition(array, low, high);
+        await Promise.all([
+          quickSort(array, low, pivotIndex - 1),
+          quickSort(array, pivotIndex + 1, high),
+        ]);
       }
-      const mid = await partition(array, start, end);
-      quickSort(array, start, mid - 1);
-      quickSort(array, mid + 1, end);
+    };
+
+    const partition = async (
+      array: number[],
+      low: number,
+      high: number
+    ): Promise<number> => {
+      const pivot = array[high];
+      setCurrentPivot(high);
+
+      let i = low;
+      for (let j = low; j < high; j++) {
+        setCurrentComparison([j, i]);
+        await delay(speed);
+
+        if (array[j] < pivot) {
+          const temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+
+          setArray([...array]);
+          i++;
+        }
+      }
+
+      const temp = array[i];
+      array[i] = array[high];
+      array[high] = temp;
+
+      setArray([...array]);
+      setCurrentComparison([]);
+      setCurrentPivot(null);
+
+      return i;
     };
 
     const newArray = [...array];
@@ -97,11 +119,11 @@ const QuickSort = () => {
               <TooltipTrigger>
                 <div
                   key={index}
-                  className={`min-w-1 max-w-20  text-black border border-black flex justify-center items-end pb-2 ${
+                  className={`min-w-1 max-w-20 text-white border border-black flex justify-center items-end pb-2 ${
                     currentComparison.includes(index)
                       ? "bg-blue-500"
-                      : currentMerge.includes(index)
-                      ? "bg-green-500"
+                      : index === currentPivot
+                      ? "bg-red-500"
                       : "bg-accent"
                   }`}
                   style={{ height: length * 4 + "px", width: barWidth + "px" }}

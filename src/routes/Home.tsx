@@ -41,6 +41,7 @@ function Home() {
         <h1 className="text-xl">Welcome</h1>
         <p>Please Choose a Algorithm Type to Visualize</p>
         <div className="flex gap-5">
+          <Button onClick={() => navigate("/data-structures")}>Data Structures</Button>
           <Button onClick={() => navigate("/searching")}>Searching Algorithms</Button>
           <Button onClick={() => navigate("/sorting")}>Sorting Algorithms</Button>
           <Button onClick={() => navigate("/pathfinding")}>Pathfinding Algorithms</Button>

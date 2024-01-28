@@ -12,6 +12,10 @@ import MergeSort from "./routes/Sorting/MergeSort";
 import QuickSort from "./routes/Sorting/QuickSort";
 import SelectionSort from "./routes/Sorting/SelectionSort";
 
+import Structures from "./routes/Structures";
+import Arrays from "./routes/Structures/Arrays";
+import LinkedList from "./routes/Structures/LinkedLists";
+
 const Routes = () => {
   return (
     <>
@@ -19,6 +23,11 @@ const Routes = () => {
         <RouterRoutes>
           <Route path="/" element={<Home />} />
           <Route path="/searching" element={<Search />} />
+
+          {/* ! DATA STRUCTURES */}
+          <Route path="/data-structures" element={<Structures />} />
+          <Route path="/data-structures/array" element={<Arrays />} />
+          <Route path="/data-structures/linked-list" element={<LinkedList />} />
 
           {/* ! SEARCHING ALGORITHMS */}
           <Route path="/searching/linear" element={<LinearSearch />} />
