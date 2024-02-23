@@ -23,7 +23,7 @@ function App() {
     <>
       <div className="flex items-center relative">
         <img
-          src="/AlgoVis.png"
+          src="/AlgoView.png"
           width="100px"
           className={`m-10 cursor-pointer ${theme === "light" ? "invert" : ""}`}
           onClick={() => (window.location.href = "/")}

@@ -49,9 +49,9 @@ function Home() {
 
         <Separator />
 
-        <p>Or Browse Through the Collection</p>
+        <p>© 2024 AlgoView</p>
 
-        <div className="flex flex-wrap justify-around p-10">
+        {/* <div className="flex flex-wrap justify-around p-10">
           {cardArray.map((card, index) => (
             <Card key={index} className="w-[400px] mt-10">
               <CardHeader>
@@ -66,7 +66,7 @@ function Home() {
               </CardFooter>
             </Card>
           ))}
-        </div>
+        </div> */}
       </div>
     </>
   );
